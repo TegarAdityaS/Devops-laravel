@@ -1,16 +1,16 @@
-pipeline {
-    agent any
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/TegarAdityaS/Devops-laravel.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'composer install'
-                sh 'php artisan migrate'
-            }
-        }
-    }
+node {
+ checkout scm
+ // deploy env dev
+ stage("Build"){
+ docker.image('shippingdocker/php-composer:7.4').inside('-u
+root') {
+ sh 'rm composer.lock'
+ sh 'composer install'
+ }
+ }
+ // Testing
+ docker.image('ubuntu').inside('-u root') {
+ sh 'echo "Ini adalah test"'
+ }
 }
+
